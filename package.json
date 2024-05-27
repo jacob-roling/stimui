@@ -1,0 +1,35 @@
+{
+  "type": "module",
+  "name": "stimui",
+  "description": "",
+  "version": "1.0.0",
+  "author": "Jacob Roling",
+  "keywords": [],
+  "license": "ISC",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "source": "./src/index.js",
+  "dependencies": {
+    "@floating-ui/dom": "^1.6.3",
+    "@vue/reactivity": "^3.4.18",
+    "tabbable": "^6.2.0"
+  },
+  "peerDependencies": {
+    "@hotwired/stimulus": "^3.2.2"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "rimraf ./dist && parcel watch",
+    "build": "rimraf ./dist && parcel build"
+  },
+  "devDependencies": {
+    "parcel": "latest",
+    "rimraf": "^5.0.7"
+  },
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  }
+}

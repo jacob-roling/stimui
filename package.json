@@ -4,8 +4,13 @@
   "description": "",
   "version": "1.0.0",
   "author": "Jacob Roling",
-  "keywords": [],
-  "license": "ISC",
+  "keywords": [
+    "stimulus",
+    "headless",
+    "component library",
+    "user interface"
+  ],
+  "license": "MIT",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "source": "./src/index.js",

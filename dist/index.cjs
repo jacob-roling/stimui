@@ -10,7 +10,10 @@ function $parcel$export(e, n, v, s) {
 
 $parcel$export(module.exports, "registerComponents", () => $af87fa11b55d7ba6$export$e73a9d346ce244ee);
 
-// This code is a minimal adaptation of @alpinejs/focus for use with @hotwired/stimulus
+/**
+ * A Stimulus utility
+ * @typedef {(number|string)} Util
+ */ // This code is a minimal adaptation of @alpinejs/focus for use with @hotwired/stimulus
 // See https://github.com/alpinejs/alpine/blob/main/packages/focus/src/index.js for the original code
 // Copyright © 2019-2021 Caleb Porzio and contributors
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:

@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 import { ref, effect } from "@vue/reactivity";
 import { useFocus, useID } from "./utils";
 
-export class Tabs extends Controller {
+export default class extends Controller {
   static targets = ["list", "tab", "panel"];
 
   static values = {
@@ -23,7 +23,7 @@ export class Tabs extends Controller {
           if (tab.getAttribute("aria-controls") === this.selected.value) {
             tab.setAttribute("aria-selected", "true");
             tab.removeAttribute("tabindex");
-            this.moveIndicator(tab);
+            // this.moveIndicator(tab);
           } else {
             tab.setAttribute("aria-selected", "false");
             tab.setAttribute("tabindex", "-1");
@@ -135,18 +135,18 @@ export class Tabs extends Controller {
     this.dispose();
   }
 
-  moveIndicator(newTab) {
-    const scaleX = newTab.offsetWidth / this.listTarget.offsetWidth;
-    this.listTarget.style.setProperty(
-      "--_tab-indicator-left",
-      CSS.px(newTab.offsetLeft)
-    );
+  // moveIndicator(newTab) {
+  //   const scaleX = newTab.offsetWidth / this.listTarget.offsetWidth;
+  //   this.listTarget.style.setProperty(
+  //     "--_tab-indicator-left",
+  //     CSS.px(newTab.offsetLeft)
+  //   );
 
-    this.listTarget.style.setProperty(
-      "--_tab-indicator-scale-x",
-      CSS.number(scaleX)
-    );
-  }
+  //   this.listTarget.style.setProperty(
+  //     "--_tab-indicator-scale-x",
+  //     CSS.number(scaleX)
+  //   );
+  // }
 }
 
 // const right = oldTab.offsetLeft < newTab.offsetLeft;

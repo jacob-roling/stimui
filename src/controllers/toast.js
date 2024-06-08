@@ -62,9 +62,12 @@ export default class Toast extends Controller {
       Array.from(this.listTarget.children).forEach((toast, index) => {
         toast.removeAttribute("data-expanded");
         this.dismissTimeouts.push(
-          setTimeout(() => {
-            this.dismiss(toast);
-          }, TOAST_LIFETIME + index * 500)
+          setTimeout(
+            () => {
+              this.dismiss(toast);
+            },
+            TOAST_LIFETIME + index * 500
+          )
         );
       });
     }, COLLAPSE_DEBOUNCE_TIME);
@@ -255,8 +258,8 @@ export default class Toast extends Controller {
     }
   }
 
-  show({ params: { templateId } }) {
-    const template = document.getElementById(templateId);
+  show({ params: { id } }) {
+    const template = document.getElementById(id);
     const itemFragment = template.content.cloneNode(true);
     this.listTarget.appendChild(itemFragment);
   }

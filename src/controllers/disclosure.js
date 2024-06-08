@@ -3,6 +3,7 @@ import { useID } from "./utils";
 
 export default class Disclosure extends Controller {
   static targets = ["button", "panel"];
+
   static values = {
     requireFocus: { type: Boolean, default: true },
   };
@@ -15,7 +16,7 @@ export default class Disclosure extends Controller {
   connect() {
     this.abortController = new AbortController();
     this.buttonTarget.setAttribute("aria-controls", this.panelTarget.id);
-    
+
     if (this.requireFocusValue) {
       this.element.addEventListener("focusout", this.focusout.bind(this), {
         signal: this.abortController.signal,
@@ -44,7 +45,7 @@ export default class Disclosure extends Controller {
    */
   focusout(event) {
     if (event.relatedTarget && !this.element.contains(event.relatedTarget)) {
-      this.close()
+      this.close();
     }
   }
 
@@ -55,18 +56,19 @@ export default class Disclosure extends Controller {
     ) {
       return this.close();
     }
-
     this.open();
   }
 
   open() {
     this.buttonTarget.setAttribute("aria-expanded", "true");
     this.panelTarget.setAttribute("data-expanded", "true");
+    this.dispatch("open");
   }
 
   close() {
     this.buttonTarget.setAttribute("aria-expanded", "false");
     this.panelTarget.removeAttribute("data-expanded");
+    this.dispatch("close");
   }
 
   buttonTargetConnected(button) {

@@ -1,7 +1,9 @@
-import Disclosure from "./components/disclosure";
-import Checkbox from "./components/checkbox";
-import Toast from "./components/toast";
-import Tooltip from "./components/tooltip";
+import Disclosure from "./controllers/disclosure";
+import Checkbox from "./controllers/checkbox";
+import Toast from "./controllers/toast";
+import Popover from "./controllers/popover";
+import Focus from "./controllers/focus";
+import Tabs from "./controllers/tabs";
 
 /**
  * @function registerComponents
@@ -12,5 +14,7 @@ export function registerComponents(stimulusApplication) {
   stimulusApplication.register("disclosure", Disclosure);
   stimulusApplication.register("checkbox", Checkbox);
   stimulusApplication.register("toast", Toast);
-  stimulusApplication.register("tooltip", Tooltip);
+  stimulusApplication.register("popover", Popover);
+  stimulusApplication.register("focus", Focus);
+  stimulusApplication.register("tabs", Tabs);
 }

@@ -7,30 +7,26 @@ import {
   offset,
 } from "@floating-ui/dom";
 
-export default class Tooltip extends Controller {
-  static targets = ["tooltip"];
+export default class extends Controller {
+  static targets = ["anchor", "popover"];
+
   static values = {
     placement: { type: String, default: "bottom" },
   };
 
-  /**
-   * @param {HTMLElement} tooltip
-   */
-  tooltipTargetConnected(tooltip) {
-    const tooltipStyle = getComputedStyle(tooltip);
+  connect() {
+    const popoverStyle = getComputedStyle(popover);
 
     const offsetValue = parseInt(
-      tooltipStyle.getPropertyValue("--tooltip-offset")
+      popoverStyle.getPropertyValue("--popover-offset")
     );
-
-    console.log(offsetValue);
 
     const paddingValue = parseInt(
-      tooltipStyle.getPropertyValue("--tooltip-padding")
+      popoverStyle.getPropertyValue("--popover-padding")
     );
 
-    this.cleanup = autoUpdate(this.element, tooltip, () => {
-      computePosition(this.element, tooltip, {
+    this.cleanup = autoUpdate(this.anchorTarget, this.popoverTarget, () => {
+      computePosition(this.anchorTarget, this.popoverTarget, {
         placement: this.placementValue,
         middleware: [
           offset(offsetValue),
@@ -38,7 +34,7 @@ export default class Tooltip extends Controller {
           shift({ padding: paddingValue }),
         ],
       }).then(({ x, y }) => {
-        Object.assign(tooltip.style, {
+        Object.assign(this.popoverTarget.style, {
           left: `${x}px`,
           top: `${y}px`,
         });

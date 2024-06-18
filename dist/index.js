@@ -1,7 +1,7 @@
 import {Controller as $4fBMS$Controller} from "@hotwired/stimulus";
 import {isFocusable as $4fBMS$isFocusable, focusable as $4fBMS$focusable} from "tabbable";
 import {ref as $4fBMS$ref, effect as $4fBMS$effect} from "@vue/reactivity";
-import {autoUpdate as $4fBMS$autoUpdate, computePosition as $4fBMS$computePosition, offset as $4fBMS$offset, flip as $4fBMS$flip, shift as $4fBMS$shift} from "@floating-ui/dom";
+import {autoUpdate as $4fBMS$autoUpdate, offset as $4fBMS$offset, flip as $4fBMS$flip, shift as $4fBMS$shift, autoPlacement as $4fBMS$autoPlacement, computePosition as $4fBMS$computePosition} from "@floating-ui/dom";
 
 
 /**
@@ -167,8 +167,8 @@ function $ea6244c3e412b179$export$3ec6e0c16b571c32() {
 
 class $5c284b903771e36d$export$2e2bcd8739ae039 extends (0, $4fBMS$Controller) {
     static targets = [
-        "button",
-        "panel"
+        "summary",
+        "details"
     ];
     static values = {
         requireFocus: {
@@ -182,10 +182,12 @@ class $5c284b903771e36d$export$2e2bcd8739ae039 extends (0, $4fBMS$Controller) {
     }
     connect() {
         this.abortController = new AbortController();
-        this.buttonTarget.setAttribute("aria-controls", this.panelTarget.id);
-        if (this.requireFocusValue) this.element.addEventListener("focusout", this.focusout.bind(this), {
+        this.summaryTarget.setAttribute("aria-controls", this.detailsTarget.id);
+        // if (this.requireFocusValue) {
+        this.element.addEventListener("focusout", this.handleFocusout.bind(this), {
             signal: this.abortController.signal
         });
+    // }
     }
     /**
    * @param {KeyboardEvent} event
@@ -203,33 +205,33 @@ class $5c284b903771e36d$export$2e2bcd8739ae039 extends (0, $4fBMS$Controller) {
     }
     /**
    * @param {FocusEvent} event
-   */ focusout(event) {
-        if (event.relatedTarget && !this.element.contains(event.relatedTarget)) this.close();
+   */ handleFocusout(event) {
+        if (event.relatedTarget && !this.element.contains(event.relatedTarget) || event.explicitOriginalTarget && !this.element.contains(event.explicitOriginalTarget)) this.close();
     }
     toggle() {
-        if (this.buttonTarget.hasAttribute("aria-expanded") && this.buttonTarget.getAttribute("aria-expanded") !== "false") return this.close();
+        if (this.summaryTarget.hasAttribute("aria-expanded") && this.summaryTarget.getAttribute("aria-expanded") !== "false") return this.close();
         this.open();
     }
     open() {
-        this.buttonTarget.setAttribute("aria-expanded", "true");
-        this.panelTarget.setAttribute("data-expanded", "true");
+        this.summaryTarget.setAttribute("aria-expanded", "true");
+        this.detailsTarget.setAttribute("data-expanded", "true");
         this.dispatch("open");
     }
     close() {
-        this.buttonTarget.setAttribute("aria-expanded", "false");
-        this.panelTarget.removeAttribute("data-expanded");
+        this.summaryTarget.setAttribute("aria-expanded", "false");
+        this.detailsTarget.removeAttribute("data-expanded");
         this.dispatch("close");
     }
-    buttonTargetConnected(button) {
-        button.addEventListener("click", this.toggle.bind(this), {
+    summaryTargetConnected(summary) {
+        summary.addEventListener("click", this.toggle.bind(this), {
             signal: this.abortController.signal
         });
-        button.addEventListener("keydown", this.keydown.bind(this), {
+        summary.addEventListener("keydown", this.keydown.bind(this), {
             signal: this.abortController.signal
         });
     }
-    panelTargetConnected(panel) {
-        if (!panel.hasAttribute("id")) panel.setAttribute("id", this.id("panel"));
+    detailsTargetConnected(details) {
+        if (!details.hasAttribute("id")) details.setAttribute("id", this.id("details"));
     }
     disconnect() {
         this.abortController.abort();
@@ -465,27 +467,27 @@ class $85f58b180e966762$export$2e2bcd8739ae039 extends (0, $4fBMS$Controller) {
         "popover"
     ];
     static values = {
-        placement: {
-            type: String,
-            default: "bottom"
-        }
+        placement: String
     };
     connect() {
-        const popoverStyle = getComputedStyle(popover);
+        const popoverStyle = getComputedStyle(this.popoverTarget);
         const offsetValue = parseInt(popoverStyle.getPropertyValue("--popover-offset"));
         const paddingValue = parseInt(popoverStyle.getPropertyValue("--popover-padding"));
         this.cleanup = (0, $4fBMS$autoUpdate)(this.anchorTarget, this.popoverTarget, ()=>{
+            const middleware = [
+                (0, $4fBMS$offset)(offsetValue),
+                (0, $4fBMS$flip)({
+                    padding: paddingValue
+                }),
+                (0, $4fBMS$shift)({
+                    padding: paddingValue
+                })
+            ];
+            const placement = this.placementValue;
+            if (!this.hasPlacementValue) middleware.push((0, $4fBMS$autoPlacement)());
             (0, $4fBMS$computePosition)(this.anchorTarget, this.popoverTarget, {
-                placement: this.placementValue,
-                middleware: [
-                    (0, $4fBMS$offset)(offsetValue),
-                    (0, $4fBMS$flip)({
-                        padding: paddingValue
-                    }),
-                    (0, $4fBMS$shift)({
-                        padding: paddingValue
-                    })
-                ]
+                placement: placement,
+                middleware: middleware
             }).then(({ x: x, y: y })=>{
                 Object.assign(this.popoverTarget.style, {
                     left: `${x}px`,
@@ -563,8 +565,8 @@ class $73ed2e0342fadd1f$export$2e2bcd8739ae039 extends (0, $4fBMS$Controller) {
             }
         });
     }
-    select(tab) {
-        this.selected.value = tab.getAttribute("aria-controls");
+    select(target) {
+        this.selected.value = target.getAttribute("aria-controls");
     }
     keydown(event) {
         event.preventDefault();
@@ -627,7 +629,7 @@ class $73ed2e0342fadd1f$export$2e2bcd8739ae039 extends (0, $4fBMS$Controller) {
         panel.setAttribute("role", "tabpanel");
         panel.setAttribute("tabindex", "0");
         panel.setAttribute("aria-labelledby", this.id(`tab-${this.panelsConnected}`));
-        if (!!panel.hasAttribute("data-tabs-selected")) this.selected.value = panel.id;
+        if (panel.hasAttribute("data-tabs-selected") && panel.getAttribute("data-tabs-selected") !== "false") this.selected.value = panel.id;
         this.panelsConnected++;
     }
     disconnect() {

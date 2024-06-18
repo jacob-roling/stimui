@@ -41,8 +41,8 @@ export default class extends Controller {
     });
   }
 
-  select(tab) {
-    this.selected.value = tab.getAttribute("aria-controls");
+  select(target) {
+    this.selected.value = target.getAttribute("aria-controls");
   }
 
   keydown(event) {
@@ -124,7 +124,10 @@ export default class extends Controller {
       "aria-labelledby",
       this.id(`tab-${this.panelsConnected}`)
     );
-    if (!!panel.hasAttribute("data-tabs-selected")) {
+    if (
+      panel.hasAttribute("data-tabs-selected") &&
+      panel.getAttribute("data-tabs-selected") !== "false"
+    ) {
       this.selected.value = panel.id;
     }
     this.panelsConnected++;

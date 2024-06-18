@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 import { useID } from "./utils";
 
 export default class Disclosure extends Controller {
-  static targets = ["button", "panel"];
+  static targets = ["summary", "details"];
 
   static values = {
     requireFocus: { type: Boolean, default: true },
@@ -15,13 +15,13 @@ export default class Disclosure extends Controller {
 
   connect() {
     this.abortController = new AbortController();
-    this.buttonTarget.setAttribute("aria-controls", this.panelTarget.id);
+    this.summaryTarget.setAttribute("aria-controls", this.detailsTarget.id);
 
-    if (this.requireFocusValue) {
-      this.element.addEventListener("focusout", this.focusout.bind(this), {
-        signal: this.abortController.signal,
-      });
-    }
+    // if (this.requireFocusValue) {
+    this.element.addEventListener("focusout", this.handleFocusout.bind(this), {
+      signal: this.abortController.signal,
+    });
+    // }
   }
 
   /**
@@ -43,16 +43,20 @@ export default class Disclosure extends Controller {
   /**
    * @param {FocusEvent} event
    */
-  focusout(event) {
-    if (event.relatedTarget && !this.element.contains(event.relatedTarget)) {
+  handleFocusout(event) {
+    if (
+      (event.relatedTarget && !this.element.contains(event.relatedTarget)) ||
+      (event.explicitOriginalTarget &&
+        !this.element.contains(event.explicitOriginalTarget))
+    ) {
       this.close();
     }
   }
 
   toggle() {
     if (
-      this.buttonTarget.hasAttribute("aria-expanded") &&
-      this.buttonTarget.getAttribute("aria-expanded") !== "false"
+      this.summaryTarget.hasAttribute("aria-expanded") &&
+      this.summaryTarget.getAttribute("aria-expanded") !== "false"
     ) {
       return this.close();
     }
@@ -60,30 +64,30 @@ export default class Disclosure extends Controller {
   }
 
   open() {
-    this.buttonTarget.setAttribute("aria-expanded", "true");
-    this.panelTarget.setAttribute("data-expanded", "true");
+    this.summaryTarget.setAttribute("aria-expanded", "true");
+    this.detailsTarget.setAttribute("data-expanded", "true");
     this.dispatch("open");
   }
 
   close() {
-    this.buttonTarget.setAttribute("aria-expanded", "false");
-    this.panelTarget.removeAttribute("data-expanded");
+    this.summaryTarget.setAttribute("aria-expanded", "false");
+    this.detailsTarget.removeAttribute("data-expanded");
     this.dispatch("close");
   }
 
-  buttonTargetConnected(button) {
-    button.addEventListener("click", this.toggle.bind(this), {
+  summaryTargetConnected(summary) {
+    summary.addEventListener("click", this.toggle.bind(this), {
       signal: this.abortController.signal,
     });
 
-    button.addEventListener("keydown", this.keydown.bind(this), {
+    summary.addEventListener("keydown", this.keydown.bind(this), {
       signal: this.abortController.signal,
     });
   }
 
-  panelTargetConnected(panel) {
-    if (!panel.hasAttribute("id")) {
-      panel.setAttribute("id", this.id("panel"));
+  detailsTargetConnected(details) {
+    if (!details.hasAttribute("id")) {
+      details.setAttribute("id", this.id("details"));
     }
   }
 

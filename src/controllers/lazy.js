@@ -15,10 +15,24 @@ export default class extends Controller {
   }
 
   updateImportMap() {
-    if (this.hasImportMapIdValue) {
+    if (!this.hasImportMapIdValue) {
+      return console.error(`Missing "importMapId" value on lazy controller`);
+    }
+
+    const importMapElement = document.getElementById(this.importMapIdValue);
+
+    if (importMapElement == undefined) {
+      return console.error(
+        `Failed to get import map by id "${this.importMapIdValue}"`
+      );
+    }
+
+    try {
       this.importMap = JSON.parse(
         document.getElementById(this.importMapIdValue).innerHTML
       );
+    } catch {
+      return console.error(`Invalid JSON in import map`);
     }
   }
 
